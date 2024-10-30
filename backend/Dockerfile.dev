@@ -1,0 +1,35 @@
+# Use the Ruby image for development
+FROM ruby:3.3.4
+
+
+# Install dependencies
+RUN apt-get update -qq && apt-get install -y \
+  nodejs \
+  postgresql-client \
+  libssl-dev \
+  libreadline-dev \
+  zlib1g-dev \
+  build-essential \
+  curl
+  
+# Copy the Gemfile and Gemfile.lock to the container
+COPY Gemfile Gemfile.lock ./
+
+# Install application dependencies
+RUN bundle install
+
+# Set the working directory in the container
+WORKDIR /rails
+
+# Copy the rest of the application code
+COPY . .
+
+# Set environment variables
+ENV RAILS_ENV=development
+# ENV BUNDLE_PATH=/gems
+
+# Expose port for Rails server
+EXPOSE 3000
+
+# Command to start the Rails server in development mode
+CMD ["rails", "server", "-b", "0.0.0.0", "-p", "3000"]
