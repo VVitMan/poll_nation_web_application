@@ -11,17 +11,17 @@
 #
 # Configure Using Gemfile
 # gem "pg"
-#
-default: &default
-  adapter: postgresql
-  encoding: unicode
-  # For details on connection pooling, see Rails configuration guide
-  # https://guides.rubyonrails.org/configuring.html#database-pooling
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
-development:
-  <<: *default
-  database: backend_development
+# default: &default
+#   adapter: postgresql
+#   encoding: unicode
+#   # For details on connection pooling, see Rails configuration guide
+#   # https://guides.rubyonrails.org/configuring.html#database-pooling
+#   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+# development:
+#   <<: *default
+#   database: backend_development
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -53,9 +53,10 @@ development:
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
-test:
-  <<: *default
-  database: backend_test
+
+# test:
+#   <<: *default
+#   database: backend_test
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -77,8 +78,28 @@ test:
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
-production:
+
+# Add test and production sections if needed
+# production:
+#   <<: *default
+#   database: backend_production
+#   username: backend
+#   password: <%= ENV["BACKEND_DATABASE_PASSWORD"] %>
+
+
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV['DATABASE_HOST'] %>         # Should match DATABASE_HOST in docker-compose
+  username: <%= ENV['DATABASE_USER'] %>     # Should match DATABASE_USER in docker-compose
+  password: <%= ENV['DATABASE_PASSWORD'] %> # Should match DATABASE_PASSWORD in docker-compose
+  port: 5432                                # PostgreSQL’s default port inside Docker
+
+development:
   <<: *default
-  database: backend_production
-  username: backend
-  password: <%= ENV["BACKEND_DATABASE_PASSWORD"] %>
+  database: <%= ENV['DATABASE_NAME'] %>     # Should match DATABASE_NAME in docker-compose
+
+test:
+  <<: *default
+  database: <%= ENV['DATABASE_NAME_TEST'] %>

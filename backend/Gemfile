@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 
+# comment ruby version because it will be conflict with the docker
 ruby "3.3.4"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
