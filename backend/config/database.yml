@@ -91,15 +91,15 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  host: <%= ENV['DATABASE_HOST'] %>         # Should match DATABASE_HOST in docker-compose
-  username: <%= ENV['DATABASE_USER'] %>     # Should match DATABASE_USER in docker-compose
-  password: <%= ENV['DATABASE_PASSWORD'] %> # Should match DATABASE_PASSWORD in docker-compose
+  host: db        # Should match DATABASE_HOST in docker-compose
+  username: postgres     # Should match DATABASE_USER in docker-compose
+  password: password # Should match DATABASE_PASSWORD in docker-compose
   port: 5432                                # PostgreSQL’s default port inside Docker
 
 development:
   <<: *default
-  database: <%= ENV['DATABASE_NAME'] %>     # Should match DATABASE_NAME in docker-compose
+  database: pollnation_development    # Should match DATABASE_NAME in docker-compose
 
 test:
   <<: *default
-  database: <%= ENV['DATABASE_NAME_TEST'] %>
+  database: pollnation_test
