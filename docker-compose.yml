@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: pollnation_development
+    ports:
+      - "6543:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # Persistent storage for the database
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev  # Use Dockerfile.dev for development
+    command: bash -c "rm -f tmp/pids/server.pid && rails s -b '0.0.0.0' -p 3000"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_HOST: db
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: password
+      DATABASE_NAME: pollnation_development
+      RAILS_ENV: development  # Set environment to development
+    volumes:
+      - ./backend:/rails  # Mount code for live reloads in development
+      - bundler_gems:/usr/local/bundle/
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev  # Use Dockerfile.dev for development
+    command: ["npm", "start"]
+    ports:
+      - "8080:8080"  # Map localhost:8080 to frontend container's port 3000
+    depends_on:
+      - backend
+    environment:
+      REACT_APP_API_URL: http://localhost:3000  # URL to the Rails API backend
+    volumes:
+      - ./frontend:/client  # Mount code for live reloads in development
+
+volumes:
+  pgdata:
+    driver: local
+  bundler_gems:
+    driver: local
